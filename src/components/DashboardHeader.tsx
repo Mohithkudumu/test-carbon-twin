@@ -1,19 +1,26 @@
-import { Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardHeader = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="glass-panel p-4 pl-6 animate-fade-in">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center animate-pulse-glow">
-          <Zap className="w-5 h-5 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="font-display text-xl font-black tracking-wider cyber-text">
-            CAMPUS TWIN
-          </h1>
-          <p className="text-[11px] text-muted-foreground tracking-wide">
-            Digital Carbon Footprint Monitor
-          </p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          {/* University Logo */}
+          <img
+            src="/ShivNadarUniversityLogo.avif"
+            alt="Shiv Nadar University"
+            className="h-12 w-auto object-contain"
+          />
+          <div className="border-l border-border/30 pl-4">
+            <h1 className="font-display text-xl font-black tracking-wider cyber-text">
+              CAMPUS TWIN
+            </h1>
+            <p className="text-[11px] text-muted-foreground tracking-wide">
+              Digital Carbon Footprint Monitor
+            </p>
+          </div>
         </div>
       </div>
 

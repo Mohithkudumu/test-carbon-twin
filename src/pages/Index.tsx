@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 import CampusMap from '@/components/CampusMap';
 import TimeSlider from '@/components/TimeSlider';
 import AnalyticsPanel from '@/components/AnalyticsPanel';
@@ -7,6 +9,7 @@ import { CampusGeoJSON } from '@/types/campus';
 import { updateBuildingData, calculateTotalCarbon, generateForecastData } from '@/lib/mockData';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [originalGeoJSON, setOriginalGeoJSON] = useState<CampusGeoJSON | null>(null);
   const [displayGeoJSON, setDisplayGeoJSON] = useState<CampusGeoJSON | null>(null);
   const [forecastHour, setForecastHour] = useState(0);
@@ -31,8 +34,13 @@ const Index = () => {
   useEffect(() => {
     if (!originalGeoJSON) return;
 
+    // Calculate the actual target hour (current hour + forecast offset)
+    const now = new Date();
+    const currentHour = now.getHours();
+    const targetHour = (currentHour + forecastHour) % 24;
+
     // Fetch live data from backend
-    fetch(`http://localhost:8000/get-emissions/${forecastHour}`)
+    fetch(`http://localhost:8000/get-emissions/${targetHour}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
@@ -89,7 +97,7 @@ const Index = () => {
       />
 
       {/* Top Left - Header */}
-      <div className="absolute top-5 left-5 z-20">
+      <div className="absolute top-24 left-8 z-20">
         <DashboardHeader />
       </div>
 
@@ -109,6 +117,16 @@ const Index = () => {
           onChange={handleSliderChange}
           forecastData={forecastData}
         />
+      </div>
+
+      {/* Bottom Left - Get Insights Button */}
+      <div className="absolute bottom-5 left-5 z-20">
+        <button
+          onClick={() => navigate('/insights')}
+          className="flex items-center gap-2 px-5 py-3 glass-panel bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-lg font-medium hover:scale-105 hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 animate-fade-in">
+          <Sparkles className="w-5 h-5" />
+          <span className="font-display tracking-wider">GET INSIGHTS</span>
+        </button>
       </div>
 
       {/* Scanlines Effect (subtle) */}

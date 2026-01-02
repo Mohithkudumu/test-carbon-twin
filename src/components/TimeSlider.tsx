@@ -10,7 +10,7 @@ interface TimeSliderProps {
 const TimeSlider = ({ value, onChange, forecastData }: TimeSliderProps) => {
   const now = new Date();
   const currentHour = now.getHours();
-  
+
   const formatTime = (hoursFromNow: number): string => {
     const hour = (currentHour + hoursFromNow) % 24;
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -45,13 +45,13 @@ const TimeSlider = ({ value, onChange, forecastData }: TimeSliderProps) => {
       <div className="relative">
         {/* Heat gradient background */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full heat-bar opacity-30" />
-        
+
         {/* Custom Slider */}
         <Slider
           value={[value]}
           onValueChange={(values) => onChange(values[0])}
           min={0}
-          max={24}
+          max={23}
           step={1}
           className="relative z-10"
         />
@@ -63,7 +63,7 @@ const TimeSlider = ({ value, onChange, forecastData }: TimeSliderProps) => {
         <span>+6h</span>
         <span>+12h</span>
         <span>+18h</span>
-        <span>+24h</span>
+        <span>+23h</span>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export const mergeForecastWithGeoJSON = (
     hour: number
 ): CampusGeoJSON => {
     const updatedFeatures = geoJSON.features.map((feature) => {
-        const buildingName = feature.properties.name || feature.properties.Name; // Handle case sensitivity
+        const buildingName = feature.properties.name || feature.properties.name; // Handle case sensitivity
         const buildingForecast = forecastData.forecasts[buildingName];
 
         if (buildingForecast && buildingForecast.hourly[hour]) {

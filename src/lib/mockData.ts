@@ -9,17 +9,17 @@ export const generateHistoricalData = (days: number): HistoricalDataPoint[] => {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
 
-    // Base carbon with weekly patterns (weekends lower)
+    // Base carbon with weekly patterns (weekends lower) - updated to match ML model range
     const dayOfWeek = date.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const baseLine = isWeekend ? 1200 : 1800;
+    const baseLine = isWeekend ? 350 : 480; // Adjusted from 1200/1800 to 350/480
 
     // Add some randomness
-    const variance = Math.random() * 400 - 200;
+    const variance = Math.random() * 120 - 60; // Adjusted from 400 to 120
 
     // Seasonal pattern (higher in summer months)
     const month = date.getMonth();
-    const seasonalFactor = month >= 4 && month <= 8 ? 1.2 : 1.0;
+    const seasonalFactor = month >= 4 && month <= 8 ? 1.15 : 1.0; // Reduced from 1.2 to 1.15
 
     data.push({
       date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -115,9 +115,9 @@ export const calculateTotalCarbon = (geoJSON: CampusGeoJSON): number => {
 
 // Get carbon level classification
 export const getCarbonLevel = (value: number): 'low' | 'mid' | 'critical' => {
-  if (value < 1200) return 'low';
-  if (value < 2000) return 'mid';
-  return 'critical';
+  if (value < 350) return 'low';      // Below 350 kg/h - night hours and low-activity periods
+  if (value < 450) return 'mid';      // 350-450 kg/h - moderate activity periods
+  return 'critical';                   // Above 450 kg/h - peak activity hours
 };
 
 // Format carbon value for display

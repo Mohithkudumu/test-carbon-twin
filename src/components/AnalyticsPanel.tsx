@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   AreaChart,
   Area,
@@ -21,25 +21,43 @@ interface AnalyticsPanelProps {
 
 const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPanelProps) => {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '6m'>('7d');
+  const [historicalData, setHistoricalData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const historicalData = useMemo(() => {
-    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 180;
-    return generateHistoricalData(days);
+  // Fetch historical data from backend
+  useEffect(() => {
+    const fetchHistoricalData = async () => {
+      setIsLoading(true);
+      try {
+        const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 180;
+        const response = await fetch(`http://localhost:8000/get-historical-data/${days}`);
+        if (!response.ok) throw new Error('Failed to fetch historical data');
+        const result = await response.json();
+        setHistoricalData(result.data);
+      } catch (error) {
+        console.error('Error fetching historical data:', error);
+        // Fallback to empty array on error
+        setHistoricalData([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHistoricalData();
   }, [timeRange]);
 
   const carbonLevel = getCarbonLevel(totalCarbon);
-  
+
   const avgCarbon = useMemo(() => {
     const avg = historicalData.reduce((sum, d) => sum + d.carbon, 0) / historicalData.length;
     return Math.round(avg);
   }, [historicalData]);
 
+  // Dynamic trend: compare current emission to historical average
   const trend = useMemo(() => {
-    if (historicalData.length < 2) return 0;
-    const recent = historicalData.slice(-3).reduce((sum, d) => sum + d.carbon, 0) / 3;
-    const earlier = historicalData.slice(0, 3).reduce((sum, d) => sum + d.carbon, 0) / 3;
-    return ((recent - earlier) / earlier) * 100;
-  }, [historicalData]);
+    if (avgCarbon === 0) return 0;
+    return ((totalCarbon - avgCarbon) / avgCarbon) * 100;
+  }, [totalCarbon, avgCarbon]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -113,7 +131,7 @@ const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPa
           </div>
           <p className="font-display text-lg font-bold">{buildingCount}</p>
         </div>
-        
+
         <div className="p-3 rounded-lg bg-muted/30 border border-border/30">
           <div className="flex items-center gap-2 mb-1">
             {trend >= 0 ? (
@@ -121,7 +139,7 @@ const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPa
             ) : (
               <TrendingDown className="w-3 h-3 text-carbon-low" />
             )}
-            <span className="text-[10px] text-muted-foreground">Trend</span>
+            <span className="text-[10px] text-muted-foreground">vs. Avg</span>
           </div>
           <p className={cn(
             "font-display text-lg font-bold",
@@ -129,6 +147,7 @@ const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPa
           )}>
             {trend >= 0 ? '+' : ''}{trend.toFixed(1)}%
           </p>
+          <p className="text-[9px] text-muted-foreground mt-0.5">from historical</p>
         </div>
       </div>
 
@@ -159,19 +178,19 @@ const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPa
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(0, 0%, 20%)" />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 tick={{ fontSize: 9, fill: 'hsl(0, 0%, 60%)' }}
                 tickLine={false}
                 axisLine={false}
                 interval={timeRange === '7d' ? 0 : 'preserveStartEnd'}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fontSize: 9, fill: 'hsl(0, 0%, 60%)' }}
                 tickLine={false}
                 axisLine={false}
                 width={35}
-                tickFormatter={(v) => `${(v/1000).toFixed(1)}k`}
+                tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`}
               />
               <Tooltip content={<CustomTooltip />} />
               <Area
