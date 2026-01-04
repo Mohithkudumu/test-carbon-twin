@@ -4,4 +4,5 @@ pandas
 tensorflow
 joblib
 numpy
+scikit-learn
 google-genai
