@@ -269,7 +269,7 @@ async def get_insights():
         }
         
         # Get API key from environment variable
-        api_key = os.getenv('GEMINI_API_KEY', 'AIzaSyB2Mqr2VxVvFEFVWqezJHew5BLVIeq1NqA')
+        api_key = os.getenv('GEMINI_API_KEY', '#replace here with ur gemeini api key')
         
         # Initialize Gemini client
         client = genai.Client(api_key=api_key)
