@@ -29,7 +29,8 @@ async def startup_event():
 cors_origins_env = os.getenv("CORS_ORIGINS", "")
 if cors_origins_env:
     # Parse comma-separated origins from environment variable
-    allowed_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+    # Strip trailing slashes that Railway might add
+    allowed_origins = [origin.strip().rstrip('/') for origin in cors_origins_env.split(",")]
 else:
     # Default to localhost for development
     allowed_origins = ["http://localhost:8080", "http://127.0.0.1:8080", "http://localhost:8081", "http://127.0.0.1:8081"]
