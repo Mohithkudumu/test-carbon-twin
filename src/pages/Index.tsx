@@ -7,6 +7,7 @@ import AnalyticsPanel from '@/components/AnalyticsPanel';
 import DashboardHeader from '@/components/DashboardHeader';
 import { CampusGeoJSON } from '@/types/campus';
 import { updateBuildingData, calculateTotalCarbon, generateForecastData } from '@/lib/mockData';
+import { API_ENDPOINTS } from '@/lib/api';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Index = () => {
     const targetHour = (currentHour + forecastHour) % 24;
 
     // Fetch live data from backend
-    fetch(`http://localhost:8000/get-emissions/${targetHour}`)
+    fetch(API_ENDPOINTS.getEmissions(targetHour))
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();

@@ -12,6 +12,7 @@ import { Activity, Leaf, TrendingUp, TrendingDown, Building2, Clock } from 'luci
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { generateHistoricalData, formatCarbon, getCarbonLevel } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
+import { API_ENDPOINTS } from '@/lib/api';
 
 interface AnalyticsPanelProps {
   totalCarbon: number;
@@ -30,7 +31,7 @@ const AnalyticsPanel = ({ totalCarbon, buildingCount, currentHour }: AnalyticsPa
       setIsLoading(true);
       try {
         const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 180;
-        const response = await fetch(`http://localhost:8000/get-historical-data/${days}`);
+        const response = await fetch(API_ENDPOINTS.getHistoricalData(days));
         if (!response.ok) throw new Error('Failed to fetch historical data');
         const result = await response.json();
         setHistoricalData(result.data);

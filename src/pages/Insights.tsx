@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Sparkles, Loader2, AlertCircle, Clock, Building2, TrendingUp, Lightbulb } from 'lucide-react';
 import InsightCard from '@/components/InsightCard';
+import { API_ENDPOINTS } from '@/lib/api';
 
 interface InsightItem {
   title: string;
@@ -33,7 +34,7 @@ const Insights = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/get-insights');
+      const response = await fetch(API_ENDPOINTS.getInsights());
       if (!response.ok) {
         throw new Error('Failed to generate insights');
       }

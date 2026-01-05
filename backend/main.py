@@ -25,9 +25,18 @@ async def startup_event():
         print("Backend will use existing emissions.json if available.\n")
 
 
+# CORS Configuration - supports environment variables for production
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+if cors_origins_env:
+    # Parse comma-separated origins from environment variable
+    allowed_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+else:
+    # Default to localhost for development
+    allowed_origins = ["http://localhost:8080", "http://127.0.0.1:8080", "http://localhost:8081", "http://127.0.0.1:8081"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://127.0.0.1:8080", "http://localhost:8081", "http://127.0.0.1:8081"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -269,7 +278,7 @@ async def get_insights():
         }
         
         # Get API key from environment variable
-        api_key = os.getenv('GEMINI_API_KEY', '#replace here with ur gemeini api key')
+        api_key = os.getenv('GEMINI_API_KEY', 'AIzaSyApasI7lKD4v3lHqjTs5IuPccppVPUpJp4')
         
         # Initialize Gemini client
         client = genai.Client(api_key=api_key)
