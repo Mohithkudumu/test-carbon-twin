@@ -13,8 +13,8 @@ const TimeSlider = ({ value, onChange, forecastData }: TimeSliderProps) => {
 
   const formatTime = (hoursFromNow: number): string => {
     const hour = (currentHour + hoursFromNow) % 24;
-    const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
+    const ampm = hour < 12 ? 'AM' : 'PM';
     return `${displayHour}:00 ${ampm}`;
   };
 
