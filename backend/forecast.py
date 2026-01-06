@@ -5,6 +5,7 @@ import pandas as pd
 import joblib
 from tensorflow.keras.models import load_model
 from datetime import datetime
+import pytz
 
 SEQ_LEN = 168  # 7 days * 24 hours
 MODEL_DIR = "models"
@@ -23,12 +24,16 @@ def generate_24h_forecast_json():
     df["Timestamp"] = pd.to_datetime(df["Timestamp"])
     df = df.sort_values(["Building_ID", "Timestamp"])
     
-    # Get current time rounded to nearest hour
-    now = datetime.now()
-    current_hour = now.replace(minute=0, second=0, microsecond=0)
+    # Get current time in IST (Indian Standard Time) rounded to nearest hour
+    IST = pytz.timezone('Asia/Kolkata')
+    now_ist = datetime.now(IST)
+    current_hour_ist = now_ist.replace(minute=0, second=0, microsecond=0)
     
-    print(f"🕐 Current time: {now}")
-    print(f"📍 Rounded to: {current_hour}")
+    # Convert to naive datetime for comparison with CSV (which has naive timestamps in IST)
+    current_hour = current_hour_ist.replace(tzinfo=None)
+    
+    print(f"🕐 Current time (IST): {now_ist}")
+    print(f"📍 Rounded to: {current_hour_ist}")
     
     # Calculate the time window we need (last 168 hours ending at current time)
     start_time = current_hour - pd.Timedelta(hours=SEQ_LEN)
@@ -70,14 +75,15 @@ def generate_24h_forecast_json():
 
         building_forecast = {}
 
-        # Recursive 24-hour forecast starting from current hour
-        for hour in range(1, 25):
+        # Recursive 24-hour forecast starting from current hour (0-23 hours ahead)
+        for hour in range(0, 24):
             pred_scaled = model.predict(history, verbose=0)[0][0]
             pred_real = scaler.inverse_transform([[pred_scaled]])[0][0]
 
-            # Generate timestamp for this forecast hour
+            # Generate timestamp for this forecast hour (in IST)
             forecast_time = current_hour + pd.Timedelta(hours=hour)
-            building_forecast[str(forecast_time)] = round(float(pred_real), 2)
+            # Store as string without timezone info for consistency
+            building_forecast[forecast_time.strftime("%Y-%m-%d %H:%M:%S")] = round(float(pred_real), 2)
 
             # Update rolling window
             history = np.roll(history, -1, axis=1)
@@ -91,7 +97,7 @@ def generate_24h_forecast_json():
         json.dump(forecast_output, f, indent=4)
 
     print(f"\n✅ Forecast saved to {OUTPUT_JSON}")
-    print(f"📅 Forecast period: {current_hour + pd.Timedelta(hours=1)} to {current_hour + pd.Timedelta(hours=24)}")
+    print(f"📅 Forecast period (IST): {current_hour} to {current_hour + pd.Timedelta(hours=23)}")
     return forecast_output
 
 if __name__ == "__main__":
