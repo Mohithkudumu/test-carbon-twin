@@ -1,4 +1,4 @@
-# 🌍 Campus Carbon Pulse
+# Campus Carbon Pulse
 
 **AI-Powered Digital Twin for Campus Carbon Footprint Monitoring**
 
@@ -11,17 +11,17 @@ A real-time 3D visualization dashboard that uses LSTM neural networks to predict
 
 ---
 
-## 🎯 Features
+##  Features
 
-- **🤖 LSTM-Based Forecasting**: 24-hour carbon emission predictions using trained neural networks
-- **🗺️ Interactive 3D Map**: Real-time campus visualization with color-coded heat levels
-- **📊 Live Dashboard**: Dynamic metrics showing total campus emissions
-- **⏱️ Time Slider**: Explore emissions across different hours of the day
-- **🎨 Modern UI**: Glassmorphic design with smooth animations
+- ** LSTM-Based Forecasting**: 24-hour carbon emission predictions using trained neural networks
+- **Interactive 3D Map**: Real-time campus visualization with color-coded heat levels
+- ** Live Dashboard**: Dynamic metrics showing total campus emissions
+- **⏱ Time Slider**: Explore emissions across different hours of the day
+- ** Modern UI**: Glassmorphic design with smooth animations
 
 ---
 
-## 🏗️ Tech Stack
+##  Tech Stack
 
 ### **Frontend**
 - **React 18** + **TypeScript**
@@ -38,7 +38,7 @@ A real-time 3D visualization dashboard that uses LSTM neural networks to predict
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### **Prerequisites**
 - Node.js 18+ and npm
@@ -119,7 +119,7 @@ campus-carbon-pulse-main/
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. **Data Collection**: Historical campus energy consumption data (CSV)
 2. **Model Training**: LSTM models trained per building to learn usage patterns
@@ -129,7 +129,7 @@ campus-carbon-pulse-main/
 
 ---
 
-## 🎨 Color Scale
+##  Color Scale
 
 Buildings are color-coded based on emission levels:
 - 🟢 **Green** (0-33%): Low emissions
@@ -138,7 +138,7 @@ Buildings are color-coded based on emission levels:
 
 ---
 
-## 📊 API Endpoints
+##  API Endpoints
 
 ### `GET /get-emissions/{hour}`
 Returns emission predictions for a specific hour (0-23).
@@ -159,25 +159,25 @@ Returns emission predictions for a specific hour (0-23).
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📄 License
+##  License
 
 This project is open source and available under the MIT License.
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
-Built with ❤️ for sustainable campus management
+Built with love for sustainable campus management
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Campus energy data provided by [Your Institution]
 - 3D mapping powered by MapLibre GL
